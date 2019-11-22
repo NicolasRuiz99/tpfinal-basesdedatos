@@ -174,8 +174,11 @@ create table review (
     date date,
     stars t_stars not null,
     title varchar(15),
-    commentary text default 'Sin comentario' 
+    commentary text default 'Sin comentario',
+	id_product int,
+	foreign key (id_product) references products (id)
 );
+
 
 INSERT INTO "roles" (name) VALUES ('admin'), ('customer');
 
@@ -271,5 +274,10 @@ INSERT INTO "reservations" (date, stock, id_user, id_color_size, state) VALUES
 ('22/09/1980', 500, 6, 6, 'cancelled'), ('20/01/2020', 100, 8, 8, 'reserved'), 
 ('12/12/2019', 78, 9, 9, 'cancelled'), ('04/09/2019', 100, 10, 10, 'reserved');
 
-select * from reservations
+
+INSERT INTO "review" (date, stars, title, commentary, id_product) VALUES 
+('22/11/2019', 6, 'Todo ok', 'Quedé encantado', 1),
+('20/11/2019', 2, 'Todo mal', 'Vino con poliyas', 1),
+('21/11/2019', 5, 'Todo en orden', 'llegó ok', 1),
+('24/11/2019', 3, 'Todo ok', 'Nada mal', 2);
 

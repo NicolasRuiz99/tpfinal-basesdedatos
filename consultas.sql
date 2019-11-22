@@ -23,3 +23,23 @@ $body$
 LANGUAGE plpgsql;
 
 select * from ComprasUsuario('nicolasrondan@live.com.ar')
+
+--Dado un producto, listar todas sus reviews. Filtrado por nombre
+CREATE OR REPLACE FUNCTION ReviewsProducto ( producto varchar)
+RETURNS table (
+		date date,
+    	stars t_stars,
+    	title varchar,
+    	commentary text)
+AS $body$
+BEGIN
+	RETURN QUERY
+	SELECT r.date, r.stars, r.title, r.commentary 
+	FROM review r, products p
+	WHERE (p.id = r.id_product and p.name = producto);
+END;
+$body$
+LANGUAGE plpgsql;
+
+select * from ReviewsProducto('jean')
+select * from review
