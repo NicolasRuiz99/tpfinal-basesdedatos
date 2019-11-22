@@ -1,0 +1,22 @@
+-(lo que vamos a hacer)
+
+producto mas vendido en un rango de fechas
+producto mas reservado
+-producto con mejor valoracion
+-dado un tipo de producto, listar los mas vendidos
+listar usuarios con mas compras
+usuario con mas mensajes enviados
+listar los productos que fueron reservados y posteriormente se vendieron
+-dado un usuario, listar todas las compras
+-dado un producto, listar todas las review
+
+procedimientos almacenados
+
+dado un usuario, listar todas las compras
+generar una reserva
+
+trigger
+
+cargar fecha actual en reservas, compras, etc.
+verificar stock en reservas
+verificar cambio de estado de la compra
