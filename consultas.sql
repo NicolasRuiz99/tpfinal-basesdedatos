@@ -43,3 +43,25 @@ LANGUAGE plpgsql;
 
 select * from ReviewsProducto('jean')
 select * from review
+select * from products
+
+--Producto con sus respectivas valoraciones
+CREATE VIEW ProductosValorados
+AS
+SELECT id_product,sum(stars) AS valoracion 
+FROM review
+GROUP BY id_product;
+
+--El producto más valorado
+CREATE VIEW ProductoMasValorado
+AS
+SELECT id_product, valoracion 
+FROM ProductosValorados
+WHERE valoracion = (SELECT MAX(valoracion) 
+					FROM ProductosValorados);
+
+--detalles del producto más valorado
+SELECT p.name, p.dsc, p.material, p.genre, p.brand, p.price, pmv.valoracion 
+FROM products p, ProductoMasValorado pmv
+WHERE (p.id = pmv.id_product)
+

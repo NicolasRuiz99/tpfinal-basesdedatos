@@ -279,5 +279,8 @@ INSERT INTO "review" (date, stars, title, commentary, id_product) VALUES
 ('22/11/2019', 6, 'Todo ok', 'Quedé encantado', 1),
 ('20/11/2019', 2, 'Todo mal', 'Vino con poliyas', 1),
 ('21/11/2019', 5, 'Todo en orden', 'llegó ok', 1),
-('24/11/2019', 3, 'Todo ok', 'Nada mal', 2);
+('24/11/2019', 3, 'Todo ok', 'Nada mal', 2),
+('24/11/2019', 6, 'Excelente', 'Nada mal', 3),
+('26/11/2019', 2, 'Pesimo', 'No me gusto', 3),
+('29/11/2019', 4, 'Todo ok', 'Nada mal', 4);
 
