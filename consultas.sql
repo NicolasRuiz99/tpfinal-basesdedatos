@@ -1,8 +1,3 @@
-select * from users;
-select * from purchase;
-select * from shipping
-select * from purchase
-
 --Dado un usuario, obtener todas sus compras. Filtrado por email
 CREATE OR REPLACE FUNCTION ComprasUsuario ( email varchar)
 RETURNS table (
@@ -22,7 +17,7 @@ END;
 $body$
 LANGUAGE plpgsql;
 
-select * from ComprasUsuario('nicolasrondan@live.com.ar')
+select * from ComprasUsuario('nicolasrondan@live.com.ar');
 
 --Dado un producto, listar todas sus reviews. Filtrado por nombre
 CREATE OR REPLACE FUNCTION ReviewsProducto ( producto varchar)
@@ -41,14 +36,12 @@ END;
 $body$
 LANGUAGE plpgsql;
 
-select * from ReviewsProducto('jean')
-select * from review
-select * from products
+select * from ReviewsProducto('jean');
 
 --Producto con sus respectivas valoraciones
 CREATE VIEW ProductosValorados
 AS
-SELECT id_product,sum(stars) AS valoracion 
+SELECT id_product,avg(stars) AS valoracion 
 FROM review
 GROUP BY id_product;
 
@@ -63,5 +56,55 @@ WHERE valoracion = (SELECT MAX(valoracion)
 --detalles del producto más valorado
 SELECT p.name, p.dsc, p.material, p.genre, p.brand, p.price, pmv.valoracion 
 FROM products p, ProductoMasValorado pmv
-WHERE (p.id = pmv.id_product)
+WHERE (p.id = pmv.id_product);
 
+--dado un tipo de producto, listar los mas vendidos
+
+select id_color_size, sum (stock) from purchxitem group by id_color_size;
+
+CREATE VIEW ProductoStockVendido
+AS
+select c.prod_id,sum (pitem.stock) stock from purchxitem pitem, purchase purch, color_size c
+where pitem.id_purchase = purch.id and purch.state = 'success' and pitem.id_color_size = c.id
+group by c.prod_id order by stock desc;
+
+
+CREATE OR REPLACE FUNCTION TipoProductoVendidos ( tipo varchar)
+RETURNS table (
+		id int,
+		name varchar,
+		type varchar,
+		stock bigint)
+AS $body$
+BEGIN
+	RETURN QUERY
+	SELECT p.id,p.name,t.name,psv.stock
+	FROM ProductoStockVendido psv, products p, type t
+	WHERE (p.id = psv.prod_id and p.type = t.id and t.name = tipo) ORDER BY psv.stock DESC;
+END;
+$body$
+LANGUAGE plpgsql;
+
+select * from TipoProductoVendidos ('ropa interior');
+
+--funcion para cambiar estado de una reserva si pasa mas de un dia desde su creacion
+
+CREATE OR REPLACE FUNCTION check_date() RETURNS TRIGGER AS $funcemp$
+BEGIN
+	UPDATE "reservations" SET state = 'cancelled' WHERE CURRENT_TIMESTAMP(2) > (date + 1);
+END; $funcemp$ LANGUAGE plpgsql;
+
+--funcion para crear una reserva
+
+CREATE OR REPLACE FUNCTION create_reservation(stock int,id_user int,id_color_size int) RETURNS void AS $funcemp$
+DECLARE
+stock_base int := (SELECT c.stock FROM color_size c WHERE id_color_size = c.id);
+BEGIN
+	IF ((stock_base - stock) < 0) THEN
+		RAISE EXCEPTION 'stock solicitado no disponible';
+	ELSE
+		INSERT INTO "reservations" (date,stock,id_user,id_color_size) VALUES 
+		(CURRENT_TIMESTAMP(2),stock,id_user,id_color_size);
+		UPDATE "color_size" c SET c.stock = c.stock - stock WHERE c.id_color_size = id_color_size;
+	END IF;
+END; $funcemp$ LANGUAGE plpgsql;
