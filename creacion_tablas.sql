@@ -1,3 +1,5 @@
+--creacion de dominios
+
 create domain gen as char 
 check (value in ('M','F','U'));
 
@@ -6,6 +8,9 @@ check (value in ('35','36','37','38','39','40','41','42','43','44','45','46','47
 
 create domain t_size as varchar 
 check (value in ('XXS','XS','S','M','L','XL','XXL'));
+
+create domain all_size as varchar 
+check (value in ('35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','XXS','XS','S','M','L','XL','XXL'));
 
 create domain t_color as varchar 
 check (value in ('rojo','verde','azul','cian','magenta','amarillo','naranja','purpura'));
@@ -28,6 +33,14 @@ check (value >= 0 and value <=6);
 create domain t_comment as text
 check (length (value) < 600);
 
+create domain t_dni as int
+check (length (value) = 8 and value > 0);
+
+create domain t_stock as int
+check (value >= 0 and value <= 9999999);
+
+--creacion de tablas
+
 create table roles (
     id serial,
     name varchar (10) unique,
@@ -45,7 +58,7 @@ create table users (
 
 create table customers (
     id serial,
-    dni numeric (8),
+    dni t_dni,
     name varchar (15),
     surname varchar (15),
     genre gen,
@@ -100,8 +113,8 @@ create table products (
 create table color_size (
     id serial,
     color t_color,
-    size varchar (4),
-    stock int default 0,
+    size all_size,
+    stock t_stock default 0,
     prod_id int,
     primary key (id),
     foreign key (prod_id) references products (id)
@@ -120,8 +133,8 @@ create table shipping (
     zip numeric (7),
     name varchar (15),
     surname varchar (15),
-    dni numeric (8),
-    track_code int unique,
+    dni t_dni,
+    track_code numeric (30) unique,
     province varchar (15),
     primary key (id)
 );
@@ -143,7 +156,7 @@ create table purchase (
 create table purchxitem (
     id_purchase int not null,
     id_color_size int,
-    stock int,
+    stock t_stock,
     primary key (id_purchase,id_color_size),
 	foreign key (id_purchase) references purchase (id)
 );
@@ -151,7 +164,7 @@ create table purchxitem (
 create table reservations (
     id serial,
     date date,
-    stock int,
+    stock t_stock,
     id_user int,
     id_color_size int,
     state res_state,
@@ -179,5 +192,15 @@ create table review (
 	foreign key (id_product) references products (id)
 );
 
+--creación de usuarios
 
+create role "admin";
+
+grant all on users,customers,chat,message,type,products,color_size,coupon,shipping,purchase,purchxitem,reservations,wishlist,review to "admin";
+
+create role "customer";
+
+grant all on users,customers,purchase,purchxitem,reservations,wishlist,review to "customer";
+
+grant insert on message,shipping to "customer";
 

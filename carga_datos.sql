@@ -3,6 +3,7 @@ SET DateStyle TO European;
 INSERT INTO "roles" (name) VALUES ('admin'), ('customer');
 
 INSERT INTO "users" (e_mail, psw, id_role) VALUES 
+('nicolasruiz@live.com.ar', 'admin123', 1),
 ('nicolasrondan@live.com.ar', 'password', 2), 
 ('ramonvaldez@live.com', 'admin', 2),
 ('juliocesar@live.com.ar', 'contraseña', 2),    
@@ -14,28 +15,31 @@ INSERT INTO "users" (e_mail, psw, id_role) VALUES
 ('japonesirz@yahoo.com', '5555s', 2);
 
 INSERT INTO "customers" (dni, name, surname, genre, c_size, shoe_size, phone_no, id_user) VALUES 
-(39031040, 'nicolas', 'rondan', 'M', 'L', '42', '3442471711', 1 ),
-(41056189, 'ramon', 'valdez', 'M', 'XL', '38', '3442471712', 2 ), 
-(28031042, 'julio', 'cesar', 'M', 'XXL', '43', '3452772718', 3 ),
-(56023781, 'leonardo', 'davinci', 'M', 'S', '40', '344378986', 4 ), 
-(8423589, 'arturo', 'rodriguez', 'M', 'XL', '43', '011567898', 5 ),
-(23561589, 'juan', 'ortiga', 'M', 'S', '39', '3445895623', 6 ), 
-(56458963, 'esteban', 'fernandez', 'M', 'XS', '41', '3442533731', 7 ),
-(28355601, 'horacio', 'quiroga', 'M', 'S', '38', '011455632', 8 ), 
-(56892301, 'olivia', 'torres', 'F', 'S', '39', '0114565238', 9 ),
-(25563247, 'raizo', 'okiwa', 'M', 'L', '40', '344368947', 10 );
+(39031040, 'nicolas', 'rondan', 'M', 'L', '42', '3442471711', 2 ),
+(41056189, 'ramon', 'valdez', 'M', 'XL', '38', '3442471712', 3 ), 
+(28031042, 'julio', 'cesar', 'M', 'XXL', '43', '3452772718', 4 ),
+(56023781, 'leonardo', 'davinci', 'M', 'S', '40', '344378986', 5 ), 
+(8423589, 'arturo', 'rodriguez', 'M', 'XL', '43', '011567898', 6 ),
+(23561589, 'juan', 'ortiga', 'M', 'S', '39', '3445895623', 7 ), 
+(56458963, 'esteban', 'fernandez', 'M', 'XS', '41', '3442533731', 8 ),
+(28355601, 'horacio', 'quiroga', 'M', 'S', '38', '011455632', 9 ), 
+(56892301, 'olivia', 'torres', 'F', 'S', '39', '0114565238', 10 ),
+(25563247, 'raizo', 'okiwa', 'M', 'L', '40', '344368947', 11 );
 
-INSERT INTO "chat" (id_user, id_admin) VALUES (1, 1), (2, 1), (3, 1), (4, 1), (5, 1), (6, 1), (7, 1), (8, 1), (9, 1), (10, 1);
+INSERT INTO "chat" (id_user, id_admin) VALUES (2, 1), (3, 1), (4, 1), (5, 1), (6, 1), (7, 1), (8, 1), (9, 1), (10, 1), (11, 1);
 
 --problema con la fecha, se puede introducir una fecha fantaseosa
 INSERT INTO "message" (msg, date, id_user, id_chat) VALUES 
-('Hola, tenes stock?', '18/12/2019', 1, 1), ('Hola?', '11/12/2019', 2, 2), 
-('quiero reembolsar...', '24/12/2019', 3, 3),
-('dssasasd', '03/12/2019', 4, 4), ('Hola, tenes stock?', '18/12/2019', 5, 5), 
-('Hola, tenes stock?', '18/12/2019', 6, 6), 
-('Hola, quiero un par de medias', '22/11/2019', 7, 7),
-('puedo ser admin?', '18/03/2017', 8, 8), (':)', '05/10/1982', 9, 9), 
-('Hola, tenes stock?', '17/12/2019', 10, 10);
+('Hola, tenes stock?', '18/12/2019', 2, 1), 
+('Hola?', '11/12/2019', 3, 2), 
+('quiero reembolsar...', '24/12/2019', 4, 3),
+('dssasasd', '03/12/2019', 5, 4), 
+('Hola, tenes stock?', '18/12/2019', 6, 5), 
+('Hola, tenes stock?', '18/12/2019', 7, 6), 
+('Hola, quiero un par de medias', '22/11/2019', 8, 7),
+('puedo ser admin?', '18/03/2017', 9, 8), 
+(':)', '05/10/1982', 10, 9), 
+('Hola, tenes stock?', '17/12/2019', 11, 10);
 
 INSERT INTO "type" (name) VALUES ('calzado'), ('remera'), ('pantalon'), ('medias'), ('ropa interior'), ('accesorios'), ('abrigos');
 
@@ -98,7 +102,7 @@ INSERT INTO "reservations" (date, stock, id_user, id_color_size, state) VALUES
 
 INSERT INTO "review" (date, stars, title, commentary, id_product) VALUES 
 ('22/11/2019', 6, 'Todo ok', 'Quedé encantado', 1),
-('20/11/2019', 2, 'Todo mal', 'Vino con poliyas', 1),
+('20/11/2019', 2, 'Todo mal', 'Vino con polillas', 1),
 ('21/11/2019', 5, 'Todo en orden', 'llegó ok', 1),
 ('24/11/2019', 3, 'Todo ok', 'Nada mal', 2),
 ('24/11/2019', 6, 'Excelente', 'Nada mal', 3),

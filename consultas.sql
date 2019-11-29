@@ -87,7 +87,7 @@ LANGUAGE plpgsql;
 
 select * from TipoProductoVendidos ('ropa interior');
 
---funcion para cambiar estado de una reserva si pasa mas de un dia desde su creacion
+--funcion para cambiar estado de una reserva si pasa mas de un dia desde su creacion (vence)
 
 CREATE OR REPLACE FUNCTION check_date() RETURNS TRIGGER AS $funcemp$
 BEGIN

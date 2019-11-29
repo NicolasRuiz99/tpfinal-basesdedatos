@@ -59,20 +59,6 @@ END; $funcemp$ LANGUAGE plpgsql;
 CREATE TRIGGER up_stock_res AFTER UPDATE ON reservations
 FOR EACH ROW EXECUTE PROCEDURE update_stock();
 
-select * from color_size
-select * from reservations
-
-CREATE OR REPLACE FUNCTION update_stock() RETURNS TRIGGER AS $funcemp$
-BEGIN
-IF (NEW.state = 'cancelled') THEN
-	UPDATE "color_size" SET stock = stock + NEW.stock WHERE id = NEW.id_color_size;
-END IF;
-RETURN NEW;
-END; $funcemp$ LANGUAGE plpgsql;
-
-CREATE TRIGGER up_stock_res AFTER UPDATE ON reservations
-FOR EACH ROW EXECUTE PROCEDURE update_stock();
-
 --trigger para checkear cambios de estado de la reserva
 
 CREATE OR REPLACE FUNCTION check_state_res() RETURNS TRIGGER AS $funcemp$
