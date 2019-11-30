@@ -1,13 +1,8 @@
-select * from purchxitem;
-select * from purchase;
-select * from color_size;
-select * from products;
-
 CREATE VIEW ProductoStockPrecio
 AS
-select purch.id purch_id,p.id prod_id,sum (pitem.stock) stock,(sum (pitem.stock)*p.price) price from purchxitem pitem, purchase purch, color_size c, products p
-where pitem.id_purchase = purch.id and pitem.id_color_size = c.id and c.prod_id = p.id
-group by purch.id,p.id order by stock desc;
+SELECT purch.id purch_id,p.id prod_id,sum (pitem.stock) stock,(sum (pitem.stock)*p.price) price FROM purchxitem pitem, purchase purch, color_size c, products p
+WHERE pitem.id_purchase = purch.id AND pitem.id_color_size = c.id AND c.prod_id = p.id
+GROUP BY purch.id,p.id ORDER BY stock DESC;
 
 --seteamos el precio total de la compra segun los precios de cada item
 
@@ -15,7 +10,7 @@ CREATE OR REPLACE FUNCTION precio_compra() RETURNS TRIGGER AS $funcemp$
 DECLARE
 precio t_price;
 BEGIN
-precio := (select sum(price) from ProductoStockPrecio where purch_id = NEW.id_purchase);
+precio := (SELECT SUM(price) FROM ProductoStockPrecio WHERE purch_id = NEW.id_purchase);
 UPDATE "purchase" SET price = precio WHERE id = NEW.id_purchase;
 RETURN NEW;
 END; $funcemp$ LANGUAGE plpgsql;
@@ -103,9 +98,13 @@ FOR EACH ROW EXECUTE PROCEDURE check_state_purch();
 CREATE OR REPLACE FUNCTION update_stock_purch() RETURNS TRIGGER AS $funcemp$
 BEGIN
 IF (NEW.state = 'pending') OR (NEW.state = 'success') THEN
-	UPDATE "color_size" SET stock = stock - (select pitem.stock from purchxitem pitem where id_purchase = NEW.id AND pitem.id_color_size = id) WHERE id in (select id_color_size from purchxitem where id_purchase = NEW.id);
+	UPDATE "color_size" 
+	SET stock = stock - (SELECT pitem.stock FROM purchxitem pitem WHERE id_purchase = NEW.id AND pitem.id_color_size = id) 
+	WHERE id IN (SELECT id_color_size FROM purchxitem WHERE id_purchase = NEW.id);
 ELSE
-	UPDATE "color_size" SET stock = stock + (select pitem.stock from purchxitem pitem where id_purchase = NEW.id AND pitem.id_color_size = id) WHERE id in (select id_color_size from purchxitem where id_purchase = NEW.id);
+	UPDATE "color_size" 
+	SET stock = stock + (SELECT pitem.stock FROM purchxitem pitem WHERE id_purchase = NEW.id AND pitem.id_color_size = id) 
+	WHERE id IN (SELECT id_color_size FROM purchxitem WHERE id_purchase = NEW.id);
 END IF;
 RETURN NEW;
 END; $funcemp$ LANGUAGE plpgsql;
@@ -113,9 +112,18 @@ END; $funcemp$ LANGUAGE plpgsql;
 CREATE TRIGGER update_stock_purch AFTER UPDATE ON purchase
 FOR EACH ROW EXECUTE PROCEDURE update_stock_purch();
 
+--trigger para checkear que la fecha de vencimiento del cupón no sea anterior a la actual 
 
+CREATE OR REPLACE FUNCTION check_coupon_date() RETURNS TRIGGER AS $funcemp$
+BEGIN
+IF NEW.cad_date <= CURRENT_TIMESTAMP(2) THEN
+	RAISE EXCEPTION 'fecha de vencimiento inválida';
+END IF;
+RETURN NEW;
+END; $funcemp$ LANGUAGE plpgsql;
 
-
+CREATE TRIGGER check_coupon_date BEFORE INSERT ON coupon
+FOR EACH ROW EXECUTE PROCEDURE check_coupon_date();
 
 
 

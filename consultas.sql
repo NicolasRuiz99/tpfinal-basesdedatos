@@ -12,7 +12,7 @@ BEGIN
 	RETURN QUERY
 	SELECT p.id, p.price, p.date, p.state, p.id_coupon, p.id_shipping 
 	FROM purchase p, users u
-	WHERE (p.id_user = u.id and u.e_mail = email);
+	WHERE (p.id_user = u.id AND u.e_mail = email);
 END;
 $body$
 LANGUAGE plpgsql;
@@ -31,7 +31,7 @@ BEGIN
 	RETURN QUERY
 	SELECT r.date, r.stars, r.title, r.commentary 
 	FROM review r, products p
-	WHERE (p.id = r.id_product and p.name = producto);
+	WHERE (p.id = r.id_product AND p.name = producto);
 END;
 $body$
 LANGUAGE plpgsql;
@@ -41,7 +41,7 @@ select * from ReviewsProducto('jean');
 --Producto con sus respectivas valoraciones
 CREATE VIEW ProductosValorados
 AS
-SELECT id_product,avg(stars) AS valoracion 
+SELECT id_product,AVG(stars) AS valoracion 
 FROM review
 GROUP BY id_product;
 
@@ -54,19 +54,20 @@ WHERE valoracion = (SELECT MAX(valoracion)
 					FROM ProductosValorados);
 
 --detalles del producto más valorado
+
 SELECT p.name, p.dsc, p.material, p.genre, p.brand, p.price, pmv.valoracion 
 FROM products p, ProductoMasValorado pmv
 WHERE (p.id = pmv.id_product);
 
 --dado un tipo de producto, listar los mas vendidos
 
-select id_color_size, sum (stock) from purchxitem group by id_color_size;
+SELECT id_color_size, sum (stock) FROM purchxitem GROUP BY id_color_size;
 
 CREATE VIEW ProductoStockVendido
 AS
-select c.prod_id,sum (pitem.stock) stock from purchxitem pitem, purchase purch, color_size c
-where pitem.id_purchase = purch.id and purch.state = 'success' and pitem.id_color_size = c.id
-group by c.prod_id order by stock desc;
+SELECT c.prod_id,sum (pitem.stock) stock FROM purchxitem pitem, purchase purch, color_size c
+WHERE pitem.id_purchase = purch.id AND purch.state = 'success' AND pitem.id_color_size = c.id
+GROUP BY c.prod_id ORDER BY stock DESC;
 
 
 CREATE OR REPLACE FUNCTION TipoProductoVendidos ( tipo varchar)
@@ -80,12 +81,12 @@ BEGIN
 	RETURN QUERY
 	SELECT p.id,p.name,t.name,psv.stock
 	FROM ProductoStockVendido psv, products p, type t
-	WHERE (p.id = psv.prod_id and p.type = t.id and t.name = tipo) ORDER BY psv.stock DESC;
+	WHERE (p.id = psv.prod_id AND p.type = t.id AND t.name = tipo) ORDER BY psv.stock DESC;
 END;
 $body$
 LANGUAGE plpgsql;
 
-select * from TipoProductoVendidos ('ropa interior');
+SELECT * FROM TipoProductoVendidos ('ropa interior');
 
 --funcion para cambiar estado de una reserva si pasa mas de un dia desde su creacion (vence)
 

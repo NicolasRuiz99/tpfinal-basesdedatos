@@ -1,61 +1,64 @@
 --creacion de dominios
 
-create domain gen as char 
-check (value in ('M','F','U'));
+CREATE domain gen AS char 
+CHECK (value IN ('M','F','U'));
 
-create domain sh_size as varchar 
-check (value in ('35','36','37','38','39','40','41','42','43','44','45','46','47','48','49'));
+CREATE domain sh_size AS varchar 
+CHECK (value IN ('35','36','37','38','39','40','41','42','43','44','45','46','47','48','49'));
 
-create domain t_size as varchar 
-check (value in ('XXS','XS','S','M','L','XL','XXL'));
+CREATE domain t_size AS varchar 
+CHECK (value IN ('XXS','XS','S','M','L','XL','XXL'));
 
-create domain all_size as varchar 
-check (value in ('35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','XXS','XS','S','M','L','XL','XXL'));
+CREATE domain all_size AS varchar 
+CHECK (value IN ('35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','XXS','XS','S','M','L','XL','XXL'));
 
-create domain t_color as varchar 
-check (value in ('rojo','verde','azul','cian','magenta','amarillo','naranja','purpura'));
+CREATE domain t_color AS varchar 
+CHECK (value IN ('rojo','verde','azul','cian','magenta','amarillo','naranja','purpura'));
 
-create domain percent as int 
-check (value >= 0 and value <= 100);
+CREATE domain percent AS int 
+CHECK (value >= 0 AND value <= 100);
 
-create domain t_price as float
-check (value >= 0 and value <= 9999999);
+CREATE domain t_price AS float
+CHECK (value >= 0 AND value <= 9999999);
 
-create domain purch_state as varchar 
-check (value in ('success','pending','cancelled','cart'));
+CREATE domain purch_state AS varchar 
+CHECK (value IN ('success','pending','cancelled','cart'));
 
-create domain res_state as varchar
-check (value in ('reserved','cancelled'));
+CREATE domain res_state AS varchar
+CHECK (value IN ('reserved','cancelled'));
 
-create domain t_stars as int
-check (value >= 0 and value <=6);
+CREATE domain t_stars AS int
+CHECK (value >= 0 AND value <=6);
 
-create domain t_comment as text
-check (length (value) < 600);
+CREATE domain t_comment AS text
+CHECK (length (value) < 600);
 
-create domain t_stock as int
-check (value >= 0 and value <= 9999999);
+CREATE domain t_stock AS int
+CHECK (value >= 0 AND value <= 9999999);
+
+CREATE domain t_dni AS varchar
+CHECK (length (value) = 8);
 
 --creacion de tablas
 
-create table roles (
+CREATE TABLE roles (
     id serial,
     name varchar (10) unique,
-    primary key (id)
+    PRIMARY KEY (id)
 );
 
-create table users (
+CREATE TABLE users (
     id serial,
     e_mail varchar (45) unique,
     psw varchar (40),
     id_role int,
-    primary key (id),
-    foreign key (id_role) references roles (id)
+    PRIMARY KEY (id),
+    FOREIGN KEY (id_role) REFERENCES roles (id)
 );
 
-create table customers (
+CREATE TABLE customers (
     id serial,
-    dni numeric (8),
+    dni t_dni,
     name varchar (15),
     surname varchar (15),
     genre gen,
@@ -63,37 +66,37 @@ create table customers (
     shoe_size sh_size,
     phone_no numeric (15),
 	id_user int not null unique,
-    primary key (id),
-	foreign key (id_user) references users (id)
+    PRIMARY KEY (id),
+	FOREIGN KEY (id_user) REFERENCES users (id)
 );
 
-create table chat (
+CREATE TABLE chat (
     id serial,
     id_customer int unique not null,
     id_admin int not null,
-    primary key (id),
-    foreign key (id_customer) references customers (id),
-    foreign key (id_admin) references users (id)
+    PRIMARY KEY (id),
+    FOREIGN KEY (id_customer) REFERENCES customers (id),
+    FOREIGN KEY (id_admin) REFERENCES users (id)
 );
 
-create table message (
+CREATE TABLE message (
     id serial,
     msg t_comment not null,
     date date,
 	id_user int,
     id_chat int,
-	primary key (id),
-	foreign key (id_user) references users (id),
-    foreign key (id_chat) references chat (id)
+	PRIMARY KEY (id),
+	FOREIGN KEY (id_user) REFERENCES users (id),
+    FOREIGN KEY (id_chat) REFERENCES chat (id)
 );
 
-create table type (
+CREATE TABLE type (
     id serial,
     name varchar (15),
-    primary key (id)
+    PRIMARY KEY (id)
 );
 
-create table products (
+CREATE TABLE products (
     id serial,
     name varchar (15) not null,
     dsc t_comment default 'Sin descripcion',
@@ -103,40 +106,40 @@ create table products (
     type int,
     discount percent default 0,
     price t_price not null,
-    primary key (id),
-    foreign key (type) references type (id)
+    PRIMARY KEY (id),
+    FOREIGN KEY (type) REFERENCES type (id)
 );
 
-create table color_size (
+CREATE TABLE color_size (
     id serial,
     color t_color,
     size all_size,
     stock t_stock default 0,
     prod_id int,
-    primary key (id),
-    foreign key (prod_id) references products (id)
+    PRIMARY KEY (id),
+    FOREIGN KEY (prod_id) REFERENCES products (id)
 );
 
-create table coupon (
+CREATE TABLE coupon (
     id serial,
     pc percent,
     cad_date date,
-    primary key (id)
+    PRIMARY KEY (id)
 );
 
-create table shipping (
+CREATE TABLE shipping (
     id serial,
     address varchar (30),
     zip numeric (7),
     name varchar (15),
     surname varchar (15),
-    dni numeric (8),
+    dni t_dni,
     track_code numeric (30) unique,
     province varchar (15),
-    primary key (id)
+    PRIMARY KEY (id)
 );
 
-create table purchase (
+CREATE TABLE purchase (
     id serial,
     price t_price,
     date date,
@@ -144,60 +147,60 @@ create table purchase (
     id_user int,
     id_coupon int,
     id_shipping int,
-    primary key (id),
-    foreign key (id_user) references users (id),
-    foreign key (id_coupon) references coupon (id),
-    foreign key (id_shipping) references shipping (id)
+    PRIMARY KEY (id),
+    FOREIGN KEY (id_user) REFERENCES users (id),
+    FOREIGN KEY (id_coupon) REFERENCES coupon (id),
+    FOREIGN KEY (id_shipping) REFERENCES shipping (id)
 );
 
-create table purchxitem (
+CREATE TABLE purchxitem (
     id_purchase int not null,
     id_color_size int,
     stock t_stock,
-    primary key (id_purchase,id_color_size),
-	foreign key (id_purchase) references purchase (id)
+    PRIMARY KEY (id_purchase,id_color_size),
+	FOREIGN KEY (id_purchase) REFERENCES purchase (id)
 );
 
-create table reservations (
+CREATE TABLE reservations (
     id serial,
     date date,
     stock t_stock,
     id_user int,
     id_color_size int,
     state res_state,
-    primary key (id),
-    foreign key (id_user) references users (id),
-    foreign key (id_color_size) references color_size (id)
+    PRIMARY KEY (id),
+    FOREIGN KEY (id_user) REFERENCES users (id),
+    FOREIGN KEY (id_color_size) REFERENCES color_size (id)
 );
 
-create table wishlist (
+CREATE TABLE wishlist (
     id_user int,
     id_prod int,
     date date,
-    primary key (id_user,id_prod),
-    foreign key (id_user) references users (id),
-    foreign key (id_prod) references products (id)
+    PRIMARY KEY (id_user,id_prod),
+    FOREIGN KEY (id_user) REFERENCES users (id),
+    FOREIGN KEY (id_prod) REFERENCES products (id)
 );
 
-create table review (
+CREATE TABLE review (
     id serial,
     date date,
     stars t_stars not null,
     title varchar(15),  
-    commentary text default 'Sin comentario',
+    commentary t_comment default 'Sin comentario',
 	id_product int,
-	foreign key (id_product) references products (id)
+	FOREIGN KEY (id_product) REFERENCES products (id)
 );
 
---creación de usuarios
+--creación de roles
 
---create role "admin";
+CREATE ROLE "admin";
 
---grant all on users,customers,chat,message,type,products,color_size,coupon,shipping,purchase,purchxitem,reservations,wishlist,review to "admin";
+GRANT ALL ON users,customers,chat,message,type,products,color_size,coupon,shipping,purchase,purchxitem,reservations,wishlist,review TO "admin";
 
---create role "customer";
+CREATE ROLE "customer";
 
---grant all on users,customers,purchase,purchxitem,reservations,wishlist,review to "customer";
+GRANT ALL ON users,customers,purchase,purchxitem,reservations,wishlist,review TO "customer";
 
---grant insert on message,shipping to "customer";
+GRANT INSERT ON message,shipping TO "customer";
 

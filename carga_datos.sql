@@ -32,7 +32,7 @@ INSERT INTO "customers" (dni, name, surname, genre, c_size, shoe_size, phone_no,
 ('41056189', 'ramon', 'valdez', 'M', 'XL', '38', '3442471712', 3 ), 
 ('28031042', 'julio', 'cesar', 'M', 'XXL', '43', '3452772718', 4 ),
 ('56023781', 'leonardo', 'davinci', 'M', 'S', '40', '344378986', 5 ), 
-('8423589', 'arturo', 'rodriguez', 'M', 'XL', '43', '011567898', 6 ),
+('84235893', 'arturo', 'rodriguez', 'M', 'XL', '43', '011567898', 6 ),
 ('23561589', 'juan', 'ortiga', 'M', 'S', '39', '3445895623', 7 ), 
 ('56458963', 'esteban', 'fernandez', 'M', 'XS', '41', '3442533731', 8 ),
 ('28355601', 'horacio', 'quiroga', 'M', 'S', '38', '011455632', 9 ), 
@@ -78,17 +78,15 @@ INSERT INTO "color_size" (color, size, stock, prod_id) VALUES ('azul', '40', 50,
 ('rojo', 'XL', 500, 9), 
 ('amarillo', 'XXL', 800, 10);
 
---En este caso se puede poner una fecha de vencimiento anterior a la actual... habria que verlo con un trigger tal vez
-
-INSERT INTO "coupon" (pc, cad_date) VALUES 
+INSERT INTO "coupon" (pc, cad_date) VALUES
 (50, '21/04/2020'), (30, '12/03/1991'), 
 (20, '21/12/2070'), (50, '12/12/2020'), 
 (31, '10/10/2020');
 
 INSERT INTO "shipping" (address, zip, name, surname, dni, track_code, province) VALUES 
-('belgrano 679', 3260, 'Raul', 'Paz', 56512355, 54654231, 'Entre rios'),
-('sarmiento 345', 4250, 'Roman', 'Pizeta', 5651, 15923789, 'La pampa'), 
-('los tulipanes 789', 3260, 'Manuel', 'Rodriguez', 89562318, 54654232, 'Entre rios');
+('belgrano 679', 3260, 'Raul', 'Paz','56512355', 54654231, 'Entre rios'),
+('sarmiento 345', 4250, 'Roman', 'Pizeta','56512038', 15923789, 'La pampa'), 
+('los tulipanes 789', 3260, 'Manuel', 'Rodriguez','89562318', 54654232, 'Entre rios');
 
 INSERT INTO "purchase" (price, date, state, id_user, id_coupon, id_shipping) VALUES 
 (3400, '17/12/2019', 'success', 1, 1, 1 ), 
