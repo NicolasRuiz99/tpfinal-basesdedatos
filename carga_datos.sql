@@ -1,4 +1,17 @@
 SET DateStyle TO European;
+ALTER SEQUENCE chat_id_seq RESTART WITH 1;
+ALTER SEQUENCE color_size_id_seq RESTART WITH 1;
+ALTER SEQUENCE coupon_id_seq RESTART WITH 1;
+ALTER SEQUENCE customers_id_seq RESTART WITH 1;
+ALTER SEQUENCE message_id_seq RESTART WITH 1;
+ALTER SEQUENCE products_id_seq RESTART WITH 1;
+ALTER SEQUENCE purchase_id_seq RESTART WITH 1;
+ALTER SEQUENCE reservations_id_seq RESTART WITH 1;
+ALTER SEQUENCE review_id_seq RESTART WITH 1;
+ALTER SEQUENCE roles_id_seq RESTART WITH 1;
+ALTER SEQUENCE shipping_id_seq RESTART WITH 1;
+ALTER SEQUENCE type_id_seq RESTART WITH 1;
+ALTER SEQUENCE users_id_seq RESTART WITH 1;
 
 INSERT INTO "roles" (name) VALUES ('admin'), ('customer');
 
@@ -15,20 +28,19 @@ INSERT INTO "users" (e_mail, psw, id_role) VALUES
 ('japonesirz@yahoo.com', '5555s', 2);
 
 INSERT INTO "customers" (dni, name, surname, genre, c_size, shoe_size, phone_no, id_user) VALUES 
-(39031040, 'nicolas', 'rondan', 'M', 'L', '42', '3442471711', 2 ),
-(41056189, 'ramon', 'valdez', 'M', 'XL', '38', '3442471712', 3 ), 
-(28031042, 'julio', 'cesar', 'M', 'XXL', '43', '3452772718', 4 ),
-(56023781, 'leonardo', 'davinci', 'M', 'S', '40', '344378986', 5 ), 
-(8423589, 'arturo', 'rodriguez', 'M', 'XL', '43', '011567898', 6 ),
-(23561589, 'juan', 'ortiga', 'M', 'S', '39', '3445895623', 7 ), 
-(56458963, 'esteban', 'fernandez', 'M', 'XS', '41', '3442533731', 8 ),
-(28355601, 'horacio', 'quiroga', 'M', 'S', '38', '011455632', 9 ), 
-(56892301, 'olivia', 'torres', 'F', 'S', '39', '0114565238', 10 ),
-(25563247, 'raizo', 'okiwa', 'M', 'L', '40', '344368947', 11 );
+('39031040', 'nicolas', 'rondan', 'M', 'L', '42', '3442471711', 2 ),
+('41056189', 'ramon', 'valdez', 'M', 'XL', '38', '3442471712', 3 ), 
+('28031042', 'julio', 'cesar', 'M', 'XXL', '43', '3452772718', 4 ),
+('56023781', 'leonardo', 'davinci', 'M', 'S', '40', '344378986', 5 ), 
+('8423589', 'arturo', 'rodriguez', 'M', 'XL', '43', '011567898', 6 ),
+('23561589', 'juan', 'ortiga', 'M', 'S', '39', '3445895623', 7 ), 
+('56458963', 'esteban', 'fernandez', 'M', 'XS', '41', '3442533731', 8 ),
+('28355601', 'horacio', 'quiroga', 'M', 'S', '38', '011455632', 9 ), 
+('56892301', 'olivia', 'torres', 'F', 'S', '39', '0114565238', 10 ),
+('25563247', 'raizo', 'okiwa', 'M', 'L', '40', '344368947', 11 );
 
-INSERT INTO "chat" (id_user, id_admin) VALUES (2, 1), (3, 1), (4, 1), (5, 1), (6, 1), (7, 1), (8, 1), (9, 1), (10, 1), (11, 1);
+INSERT INTO "chat" (id_customer, id_admin) VALUES (1, 1), (2, 1), (3, 1), (4, 1), (5, 1), (6, 1), (7, 1), (8, 1), (9, 1), (10, 1);
 
---problema con la fecha, se puede introducir una fecha fantaseosa
 INSERT INTO "message" (msg, date, id_user, id_chat) VALUES 
 ('Hola, tenes stock?', '18/12/2019', 2, 1), 
 ('Hola?', '11/12/2019', 3, 2), 
@@ -55,8 +67,6 @@ INSERT INTO "products" (name, dsc, material, genre, brand, type, discount, price
 ('campera','', 'algodon', 'M', 'adidas', 7, 30, 3200 ), 
 ('bufanda', '', 'lana', 'F', 'vinson', 7, 0, 500);
 
---Acá hay inconsistencias con el talle, por ejemplo en el jean que se puede poner 40 ¿como resolverlo? , y... ¿que pasa con el talle de los lentes de sol?
-
 INSERT INTO "color_size" (color, size, stock, prod_id) VALUES ('azul', '40', 50, 1),
 ('verde', '42', 100, 2), 
 ('purpura', 'L', 150, 3), 
@@ -75,22 +85,18 @@ INSERT INTO "coupon" (pc, cad_date) VALUES
 (20, '21/12/2070'), (50, '12/12/2020'), 
 (31, '10/10/2020');
 
---Acá puede haber track-codes repetidos y documentos cortos
 INSERT INTO "shipping" (address, zip, name, surname, dni, track_code, province) VALUES 
 ('belgrano 679', 3260, 'Raul', 'Paz', 56512355, 54654231, 'Entre rios'),
 ('sarmiento 345', 4250, 'Roman', 'Pizeta', 5651, 15923789, 'La pampa'), 
 ('los tulipanes 789', 3260, 'Manuel', 'Rodriguez', 89562318, 54654232, 'Entre rios');
-
 
 INSERT INTO "purchase" (price, date, state, id_user, id_coupon, id_shipping) VALUES 
 (3400, '17/12/2019', 'success', 1, 1, 1 ), 
 (2000, '10/12/2019', 'pending', 2, 2, 2 ),
 (1000, '01/12/2019', 'cancelled', 3, 3, 3 );
 
-
 INSERT INTO "purchxitem" (id_purchase, id_color_size,stock) VALUES 
 (1,1,2),(2,2,5),(3,3,6),(1,4,1),(1,5,3),(3,6,4),(2,7,2),(1,8,1),(1,9,1),(1,10,2),(2,4,3),(2,5,2);
-
 
 INSERT INTO "reservations" (date, stock, id_user, id_color_size, state) VALUES 
 ('04/09/2019', 100, 1, 1, 'reserved'), ('04/10/2019', 50, 2, 3, 'cancelled'),
@@ -98,7 +104,6 @@ INSERT INTO "reservations" (date, stock, id_user, id_color_size, state) VALUES
 ('25/10/2019', 16, 5, 7, 'reserved'), ('21/11/2019', 60, 7, 5, 'reserved'),
 ('22/09/1980', 500, 6, 6, 'cancelled'), ('20/01/2020', 100, 8, 8, 'reserved'), 
 ('12/12/2019', 78, 9, 9, 'cancelled'), ('04/09/2019', 100, 10, 10, 'reserved');
-
 
 INSERT INTO "review" (date, stars, title, commentary, id_product) VALUES 
 ('22/11/2019', 6, 'Todo ok', 'Quedé encantado', 1),

@@ -68,7 +68,7 @@ IF (TG_OP = 'INSERT') THEN
 		RAISE EXCEPTION 'estado no valido';
 	END IF;
 ELSE
-	IF (NEW.state = 'cancelled' AND OLD.state = 'cancelled') OR (NEW.state = 'reserved' AND OLD.state = 'cancelled') THEN
+	IF (NEW.state = 'reserved' AND OLD.state = 'cancelled') THEN
 		RAISE EXCEPTION 'operacion inválida';
 	END IF;
 END IF;
@@ -88,7 +88,7 @@ IF (TG_OP = 'INSERT') THEN
 		RAISE EXCEPTION 'estado no valido';
 	END IF;
 ELSE
-	IF (NEW.state = 'cancelled' AND OLD.state = 'success') OR (NEW.state = 'pending' AND OLD.state = 'success') OR (NEW.state = 'cart' AND OLD.state = 'pending')THEN
+	IF (NEW.state = 'cancelled' AND OLD.state = 'success') OR (NEW.state = 'pending' AND OLD.state = 'success') OR (NEW.state = 'cart' AND OLD.state = 'pending') OR (NEW.state = 'cancelled' AND OLD.state = 'cart') THEN
 		RAISE EXCEPTION 'operacion inválida';
 	END IF;
 END IF;
@@ -97,3 +97,28 @@ END; $funcemp$ LANGUAGE plpgsql;
 
 CREATE TRIGGER check_state_purch BEFORE INSERT OR UPDATE ON purchase
 FOR EACH ROW EXECUTE PROCEDURE check_state_purch();
+
+--trigger para restar o sumar stock cuando cambia el estado de la compra
+
+CREATE OR REPLACE FUNCTION update_stock_purch() RETURNS TRIGGER AS $funcemp$
+BEGIN
+IF (NEW.state = 'pending') OR (NEW.state = 'success') THEN
+	UPDATE "color_size" SET stock = stock - (select pitem.stock from purchxitem pitem where id_purchase = NEW.id AND pitem.id_color_size = id) WHERE id in (select id_color_size from purchxitem where id_purchase = NEW.id);
+ELSE
+	UPDATE "color_size" SET stock = stock + (select pitem.stock from purchxitem pitem where id_purchase = NEW.id AND pitem.id_color_size = id) WHERE id in (select id_color_size from purchxitem where id_purchase = NEW.id);
+END IF;
+RETURN NEW;
+END; $funcemp$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_stock_purch AFTER UPDATE ON purchase
+FOR EACH ROW EXECUTE PROCEDURE update_stock_purch();
+
+
+
+
+
+
+
+
+
+

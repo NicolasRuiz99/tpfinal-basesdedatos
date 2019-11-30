@@ -33,9 +33,6 @@ check (value >= 0 and value <=6);
 create domain t_comment as text
 check (length (value) < 600);
 
-create domain t_dni as int
-check (length (value) = 8 and value > 0);
-
 create domain t_stock as int
 check (value >= 0 and value <= 9999999);
 
@@ -58,7 +55,7 @@ create table users (
 
 create table customers (
     id serial,
-    dni t_dni,
+    dni numeric (8),
     name varchar (15),
     surname varchar (15),
     genre gen,
@@ -72,10 +69,10 @@ create table customers (
 
 create table chat (
     id serial,
-    id_user int unique not null,
+    id_customer int unique not null,
     id_admin int not null,
     primary key (id),
-    foreign key (id_user) references customers (id),
+    foreign key (id_customer) references customers (id),
     foreign key (id_admin) references users (id)
 );
 
@@ -133,7 +130,7 @@ create table shipping (
     zip numeric (7),
     name varchar (15),
     surname varchar (15),
-    dni t_dni,
+    dni numeric (8),
     track_code numeric (30) unique,
     province varchar (15),
     primary key (id)
@@ -194,13 +191,13 @@ create table review (
 
 --creación de usuarios
 
-create role "admin";
+--create role "admin";
 
-grant all on users,customers,chat,message,type,products,color_size,coupon,shipping,purchase,purchxitem,reservations,wishlist,review to "admin";
+--grant all on users,customers,chat,message,type,products,color_size,coupon,shipping,purchase,purchxitem,reservations,wishlist,review to "admin";
 
-create role "customer";
+--create role "customer";
 
-grant all on users,customers,purchase,purchxitem,reservations,wishlist,review to "customer";
+--grant all on users,customers,purchase,purchxitem,reservations,wishlist,review to "customer";
 
-grant insert on message,shipping to "customer";
+--grant insert on message,shipping to "customer";
 
