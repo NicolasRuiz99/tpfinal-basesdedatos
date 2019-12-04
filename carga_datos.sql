@@ -79,7 +79,7 @@ INSERT INTO "color_size" (color, size, stock, prod_id) VALUES ('azul', '40', 50,
 ('amarillo', 'XXL', 800, 10);
 
 INSERT INTO "coupon" (pc, cad_date) VALUES
-(50, '21/04/2020'), (30, '12/03/1991'), 
+(50, '21/04/2020'), (30, '12/03/2020'), 
 (20, '21/12/2070'), (50, '12/12/2020'), 
 (31, '10/10/2020');
 
@@ -89,19 +89,30 @@ INSERT INTO "shipping" (address, zip, name, surname, dni, track_code, province) 
 ('los tulipanes 789', 3260, 'Manuel', 'Rodriguez','89562318', 54654232, 'Entre rios');
 
 INSERT INTO "purchase" (price, date, state, id_user, id_coupon, id_shipping) VALUES 
-(3400, '17/12/2019', 'success', 1, 1, 1 ), 
-(2000, '10/12/2019', 'pending', 2, 2, 2 ),
-(1000, '01/12/2019', 'cancelled', 3, 3, 3 );
+(3400, '17/12/2019', 'cart', 1, 1, 1 ), 
+(2000, '10/12/2019', 'cart', 2, 2, 2 ),
+(1000, '01/12/2019', 'cart', 3, 3, 3 );
+
+UPDATE "purchase" SET state = 'success' WHERE id = 1;
+UPDATE "purchase" SET state = 'pending' WHERE id = 2;
+UPDATE "purchase" SET state = 'pending' WHERE id = 3;
+UPDATE "purchase" SET state = 'cancelled' WHERE id = 3;
 
 INSERT INTO "purchxitem" (id_purchase, id_color_size,stock) VALUES 
 (1,1,2),(2,2,5),(3,3,6),(1,4,1),(1,5,3),(3,6,4),(2,7,2),(1,8,1),(1,9,1),(1,10,2),(2,4,3),(2,5,2);
 
-INSERT INTO "reservations" (date, stock, id_user, id_color_size, state) VALUES 
-('04/09/2019', 100, 1, 1, 'reserved'), ('04/10/2019', 50, 2, 3, 'cancelled'),
-('20/11/2019', 100, 3, 2, 'reserved'), ('12/11/2019', 25, 4, 4, 'cancelled'), 
-('25/10/2019', 16, 5, 7, 'reserved'), ('21/11/2019', 60, 7, 5, 'reserved'),
-('22/09/1980', 500, 6, 6, 'cancelled'), ('20/01/2020', 100, 8, 8, 'reserved'), 
-('12/12/2019', 78, 9, 9, 'cancelled'), ('04/09/2019', 100, 10, 10, 'reserved');
+select create_reservation(10, 1, 1);
+select create_reservation(20, 2, 3);
+select create_reservation(3, 3, 2);
+select create_reservation(11, 4, 4);
+select create_reservation(16, 5, 7);
+select create_reservation(3, 7, 5);
+select create_reservation(15, 6, 6);
+select create_reservation(13, 8, 8);
+select create_reservation(16, 9, 9);
+select create_reservation(5, 10, 10);
+
+UPDATE "reservations" SET state = 'cancelled' WHERE id in (2,4,7,9);
 
 INSERT INTO "review" (date, stars, title, commentary, id_product) VALUES 
 ('22/11/2019', 6, 'Todo ok', 'Quedé encantado', 1),
