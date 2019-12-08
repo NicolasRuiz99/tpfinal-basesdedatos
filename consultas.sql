@@ -1,4 +1,5 @@
 --Dado un usuario, obtener todas sus compras. Filtrado por email
+
 CREATE OR REPLACE FUNCTION ComprasUsuario ( email varchar)
 RETURNS table (
 		id int,
@@ -17,9 +18,8 @@ END;
 $body$
 LANGUAGE plpgsql;
 
-select * from ComprasUsuario('nicolasrondan@live.com.ar');
-
 --Dado un producto, listar todas sus reviews. Filtrado por nombre
+
 CREATE OR REPLACE FUNCTION ReviewsProducto ( producto varchar)
 RETURNS table (
 		date date,
@@ -36,9 +36,8 @@ END;
 $body$
 LANGUAGE plpgsql;
 
-select * from ReviewsProducto('jean');
-
 --Producto con sus respectivas valoraciones
+
 CREATE VIEW ProductosValorados
 AS
 SELECT id_product,AVG(stars) AS valoracion 
@@ -46,6 +45,7 @@ FROM review
 GROUP BY id_product;
 
 --El producto más valorado
+
 CREATE VIEW ProductoMasValorado
 AS
 SELECT id_product, valoracion 
@@ -53,15 +53,7 @@ FROM ProductosValorados
 WHERE valoracion = (SELECT MAX(valoracion) 
 					FROM ProductosValorados);
 
---detalles del producto más valorado
-
-SELECT p.name, p.dsc, p.material, p.genre, p.brand, p.price, pmv.valoracion 
-FROM products p, ProductoMasValorado pmv
-WHERE (p.id = pmv.id_product);
-
---dado un tipo de producto, listar los mas vendidos
-
-SELECT id_color_size, sum (stock) FROM purchxitem GROUP BY id_color_size;
+--Dado un tipo de producto, listar los mas vendidos
 
 CREATE VIEW ProductoStockVendido
 AS
@@ -86,8 +78,6 @@ END;
 $body$
 LANGUAGE plpgsql;
 
-SELECT * FROM TipoProductoVendidos ('ropa interior');
-
 --funcion para cambiar estado de una reserva si pasa mas de un dia desde su creacion (vence)
 
 CREATE OR REPLACE FUNCTION check_date() RETURNS TRIGGER AS $funcemp$
@@ -104,9 +94,8 @@ BEGIN
 	IF ((stock_base - stock_r) < 0) THEN
 		RAISE EXCEPTION 'stock solicitado no disponible';
 	ELSE
-		INSERT INTO "reservations" (date,stock,id_user,id_color_size) VALUES 
-		(CURRENT_TIMESTAMP(2),stock_r,id_user_r,id_color_size_r);
+		INSERT INTO "reservations" (date,stock,id_user,id_color_size,state) VALUES 
+		(CURRENT_TIMESTAMP(2),stock_r,id_user_r,id_color_size_r,'reserved');
 		UPDATE "color_size" SET stock = stock - stock_r WHERE id = id_color_size_r;
 	END IF;
 END; $funcemp$ LANGUAGE plpgsql;
-

@@ -67,7 +67,8 @@ INSERT INTO "products" (name, dsc, material, genre, brand, type, discount, price
 ('campera','', 'algodon', 'M', 'adidas', 7, 30, 3200 ), 
 ('bufanda', '', 'lana', 'F', 'vinson', 7, 0, 500);
 
-INSERT INTO "color_size" (color, size, stock, prod_id) VALUES ('azul', '40', 50, 1),
+INSERT INTO "color_size" (color, size, stock, prod_id) VALUES 
+('azul', '40', 50, 1),
 ('verde', '42', 100, 2), 
 ('purpura', 'L', 150, 3), 
 ('amarillo', '41', 500, 4),
@@ -88,18 +89,18 @@ INSERT INTO "shipping" (address, zip, name, surname, dni, track_code, province) 
 ('sarmiento 345', 4250, 'Roman', 'Pizeta','56512038', 15923789, 'La pampa'), 
 ('los tulipanes 789', 3260, 'Manuel', 'Rodriguez','89562318', 54654232, 'Entre rios');
 
-INSERT INTO "purchase" (price, date, state, id_user, id_coupon, id_shipping) VALUES 
-(3400, '17/12/2019', 'cart', 1, 1, 1 ), 
-(2000, '10/12/2019', 'cart', 2, 2, 2 ),
-(1000, '01/12/2019', 'cart', 3, 3, 3 );
+INSERT INTO "purchase" (date, state, id_user, id_coupon, id_shipping) VALUES 
+('17/12/2019', 'cart', 1, 1, 1 ), 
+('10/12/2019', 'cart', 2, 2, 2 ),
+('01/12/2019', 'cart', 3, 3, 3 );
+
+INSERT INTO "purchxitem" (id_purchase, id_color_size,stock) VALUES 
+(1,1,2),(2,2,5),(3,3,6),(1,4,1),(1,5,3),(3,6,4),(2,7,2),(1,8,1),(1,9,1),(1,10,2),(2,4,3),(2,5,2);
 
 UPDATE "purchase" SET state = 'success' WHERE id = 1;
 UPDATE "purchase" SET state = 'pending' WHERE id = 2;
 UPDATE "purchase" SET state = 'pending' WHERE id = 3;
 UPDATE "purchase" SET state = 'cancelled' WHERE id = 3;
-
-INSERT INTO "purchxitem" (id_purchase, id_color_size,stock) VALUES 
-(1,1,2),(2,2,5),(3,3,6),(1,4,1),(1,5,3),(3,6,4),(2,7,2),(1,8,1),(1,9,1),(1,10,2),(2,4,3),(2,5,2);
 
 select create_reservation(10, 1, 1);
 select create_reservation(20, 2, 3);

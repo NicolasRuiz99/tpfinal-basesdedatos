@@ -141,7 +141,7 @@ CREATE TABLE shipping (
 
 CREATE TABLE purchase (
     id serial,
-    price t_price,
+    price t_price default 0,
     date date,
     state purch_state,
     id_user int,
@@ -192,7 +192,7 @@ CREATE TABLE review (
 	FOREIGN KEY (id_product) REFERENCES products (id)
 );
 
---creación de roles
+creación de roles
 
 CREATE ROLE "admin";
 
